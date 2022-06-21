@@ -1,0 +1,118 @@
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!--Chart js-->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js" ></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.css" />
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+
+    <title>Text-Editor/IDE Charts</title>
+  </head>
+  <body>
+    <!-- displaying the chart -->
+<!-- you can also play around with the width and height to increase or decrease the chart size -->
+<canvas id="myChart" style="width:100%;max-width:400px;max-height:350px;"></canvas>  
+<canvas id="myChart2" style="width:100%;max-width:400px;max-height:350px;"></canvas> 
+  </body>
+</html>
+{%block scripts%}
+<script>
+// jquery function
+
+  
+
+$(document).ready(function(){
+    $.ajax({
+  url: "get_data",
+  type: "GET",
+  dataType: "json",
+  success: (data) => {
+    var xValues = ["Pozitif", "Nötr", "Negatif"];
+  var  yValues=[data[' pozitif'],data[' notr'],data[' negatif']];
+    var barColors = ["green", "blue","red"];
+        
+        var myChart = new Chart('myChart', {
+  type: "bar",
+   
+  data: {
+    labels: xValues,
+    datasets:  [{
+      backgroundColor: "green",
+      label: "Pozitif",
+      data: [data[' pozitif'], null, null]
+    }, {
+      backgroundColor: "blue",
+      label: "Nötr",
+      data: [null,data[' notr'],  null]
+    }, 
+    {
+      backgroundColor: "red",
+      label: "Negatif",
+      data:[null,null,data[' negatif']  ]
+    }]
+  },
+  plugins: {
+      legend: {
+        position: 'top',
+      },
+      title: {
+        display: true,
+        text: 'Chart.js Bar Chart'
+      }
+    },
+  options: {
+    animations: {
+      tension: {
+        duration: 1000,
+        easing: 'bar',
+        from: 1,
+        to: 0,
+        loop: true
+      }
+    },
+    scales: {
+      y: { // defining min and max so hiding the dataset does not change scale range
+        min: 0,
+        ticks: {
+         
+          stepSize: 1
+        }
+      }
+    }
+}});
+
+new Chart("myChart2", {
+  type: "pie",
+  data: {
+    labels: xValues,
+    datasets: [{
+      backgroundColor: barColors,
+      data: yValues
+    }]
+  },
+  options: {
+    animations: {
+      tension: {
+        duration: 1000,
+        easing: 'pie',
+        from: 1,
+        to: 0,
+        loop: true
+      }
+    },
+ 
+}});
+  },
+  error: (error) => {
+    console.log(error);
+  }
+});
+
+    });
+</script>
+{%endblock scripts%}
+
+
+
